@@ -41,11 +41,11 @@ module.exports = {
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: vueLoaderConfig
-      },
+      // {
+      //   test: /\.vue$/,
+      //   loader: 'vue-loader',
+      //   options: vueLoaderConfig
+      // },
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -74,7 +74,22 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }
+      },
+      {
+           test: /\.vue$/,
+           use: [
+               {
+                   loader: 'vue-loader',
+                   options: vueLoaderConfig
+               },
+               {
+                   loader: 'iview-loader',
+                   options: {
+                       prefix: true
+                   }
+               }
+           ]
+       }
     ]
   },
   node: {

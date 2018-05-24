@@ -1,39 +1,39 @@
 <template>
-  <Card class='card'>
+  <i-card class='i-card'>
       <h3>流动人口及外来务工人员随迁子女就读申请</h3>
       <template v-for='(item,index) in list'>
-        <Row class='card-item-row' :key='index'>
-          <Col>
-            <Card class='card-item'>
+        <i-row class='i-card-item-i-row' :key='index'>
+          <i-col>
+            <i-card class='i-card-item'>
               <p slot='title'>{{item.title}}</p>
-              <Row>
-                <Col span="12" class="card-item-lable">材料模板：</Col>
-                <Col span="12">{{item.template}}</Col>
-              </Row>
-              <Row>
-                <Col span="12" class="card-item-lable">材料说明：</Col>
-                <Col span="12">{{item.desc}}</Col>
-              </Row>
-              <Row class="upload">
-                <Col>
-                  <Upload multiple action="//jsonplaceholder.typicode.com/posts/">
-                    <Button type="primary" icon="ios-cloud-upload-outline">Upload files</Button>
-                  </Upload>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-        </Row>
+              <i-row>
+                <i-col span="12" class="i-card-item-lable">材料模板：</i-col>
+                <i-col span="12">{{item.template}}</i-col>
+              </i-row>
+              <i-row>
+                <i-col span="12" class="i-card-item-lable">材料说明：</i-col>
+                <i-col span="12">{{item.desc}}</i-col>
+              </i-row>
+              <i-row class="i-upload">
+                <i-col>
+                  <i-upload multiple action="//jsonplaceholder.typicode.com/posts/">
+                    <i-button type="primary" icon="ios-cloud-i-upload-outline">上传</i-button>
+                  </i-upload>
+                </i-col>
+              </i-row>
+            </i-card>
+          </i-col>
+        </i-row>
       </template>
-  </Card>
+  </i-card>
 </template>
-<script scoped>
-import Api from '../assets/script/weiXinApi.js'
+<script>
+import {mapActions} from 'vuex'
 export default {
-  name : 'Index',
+  name: 'Index',
   data () {
     return {
-      list : [
+      list: [
         {
           title: '入学申请书',
           template: 'this is a iamge',
@@ -67,24 +67,33 @@ export default {
       ]
     }
   },
+  methods: {
+    ...mapActions([
+      'init', // map `this.init()` to `this.$store.dispatch('init')`
+      'update'// map `this.update()` to `this.$store.dispatch('update')`
+    ])
+  },
+  created () {
+    this.init()
+  },
   mounted () {
-    Api.getAccessToken('wxa3481e4144f5be65','60767f78d3f897a7191446ee4bedb952')
+    // Api.getAccessToken('wxa3481e4144f5be65','60767f78d3f897a7191446ee4bedb952')
   }
 }
 
 </script>
-<style>
-  .card {
+<style scoped>
+  .i-card {
     margin: 0 auto;
     width: 90%
   }
-  .card-item-row {
+  .i-card-item-i-row {
     margin: 10% 0 10% 0;
   }
-  .card-item-lable {
+  .i-card-item-lable {
     text-align: left;
   }
-  .upload{
+  .i-upload{
     margin-top: 5%
   }
 </style>
