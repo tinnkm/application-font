@@ -1,12 +1,12 @@
 import axios from 'axios'
 import qs from 'qs'
-import Base64 from 'js-base64'
+// import Base64 from 'js-base64'
 
 // global axio defaults start
 if (process.env.NODE_ENV === 'development') {
-  axios.default.baseURL = ''
+  axios.default.baseURL = 'http://localhost:8081'
 } else if (process.env.NODE_ENV === 'debug') {
-  axios.default.baseURL = ''
+  axios.default.baseURL = 'http://localhost:8081'
 } else if (process.env.NODE_ENV === 'production') {
   axios.default.baseURL = ''
 }
@@ -25,7 +25,7 @@ let pending = {}
 // request interceptors
 axios.interceptors.request.use(config => {
   // get flag
-  let flag = Base64.encode(config.url + qs.stringify(config.params) + qs.stringify(config.data))
+  let flag = config.url + qs.stringify(config.params) + qs.stringify(config.data)
   if (pending[flag]) {
     pending[flag]('cancle the request by user, because of it is repeated!')
     // if this request has been cancled then remove this flag
@@ -49,10 +49,10 @@ axios.interceptors.request.use(config => {
 //   data : object
 // }
 axios.interceptors.response.use(response => {
-  if (response.data.result !== '1') {
+  if (response.data.code !== 'Success') {
     return Promise.reject(response.data.message)
   }
-  return response
+  return response.data
 }, err => {
   if (err && err.response) {
     switch (err.response.status) {

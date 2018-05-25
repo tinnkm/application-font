@@ -6,6 +6,8 @@ import router from './router'
 import IView from 'iview'
 import 'iview/dist/styles/iview.css'
 import store from './store'
+import Http from './assets/script/http/axiosApi'
+Vue.prototype.$axios = Http
 Vue.config.productionTip = false
 Vue.use(IView)
 /* eslint-disable no-new */
