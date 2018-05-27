@@ -1,4 +1,3 @@
-import http from '../../assets/script/http/axiosApi'
 const state = {
   approvalStore: {}
 }
@@ -8,11 +7,9 @@ const mutations = {
   }
 }
 const actions = {
-  init ({commit}) {
+  init ({commit}, data) {
     // 此处不能用this.$axios因为this不指向vue
-    http.get('/api/createApproval').then(res => {
-      commit('update', res.data)
-    })
+    commit('update', data)
   },
   update ({commit}, approval) {
     commit('update', approval)

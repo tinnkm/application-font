@@ -18,10 +18,9 @@
                 <i-col>
                   <div class="upload-list" v-for="(item, _index) in uploadList[index]" :key="index+'_'+_index">
                    <template v-if="item.status === 'finished'">
-                     {{item.response.data.bizId}}
-                     <img :src="item.url">
+                     <img :src="'/api/file/download/' + item.response.data">
                      <div class="upload-list-cover">
-                         <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
+                         <Icon type="ios-eye-outline" @click.native="handleView(item.response.data)"></Icon>
                          <Icon type="ios-trash-outline" @click.native="handleRemove(index, item)"></Icon>
                      </div>
                    </template>
@@ -49,8 +48,9 @@
         </i-row>
       </template>
       <i-modal title="View Image" v-model="visible">
-        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
+        <img :src="'/api/file/download/' + fileId" v-if="visible" style="width: 100%">
       </i-modal>
+      <Button type="primary" @click='handelSubmit'>提交</Button>
   </i-card>
 </template>
 <script>
@@ -106,7 +106,7 @@ export default {
         }
       ],
       uploadList: [],
-      imgName: '',
+      fileId: '',
       visible: false,
       currentIndex: 0,
       currentList: []
@@ -141,8 +141,8 @@ export default {
       }
       console.log(this.uploadList)
     },
-    handleView (name) {
-      this.imgName = name
+    handleView (fileId) {
+      this.fileId = fileId
       this.visible = true
     },
     handleFormatError (file) {
@@ -154,14 +154,26 @@ export default {
     handleRemove (index, item) {
       // uploadList中删除。文件删除，数据库删除
       // 文件删除
-      let list = this.uploadList[index]
-      list.splice(list.indexOf(item), 1)
-      Vue.set(this.uploadList, index, list)
       // 后台删除
+      this.$axios.delete('/api/file/delete/' + item.response.data).then(res => {
+        let list = this.uploadList[index]
+        list.splice(list.indexOf(item), 1)
+        Vue.set(this.uploadList, index, list)
+      })
+    },
+    handelSubmit () {
+      this.$axios.post('/api/updateApproval/' + this.approvalStore.bizId).then(res => {
+        this.$router.push({name: 'Result', params: { bizId: this.approvalStore.bizId }})
+      })
     }
   },
   created () {
-    this.init()
+    this.$axios.get('/api/createApproval').then(res => {
+      this.init(res.data)
+      if (res.data.status !== 0) {
+        this.$router.push({name: 'Error', params: { bizId: res.data.bizId }})
+      }
+    })
   },
   mounted () {
 
@@ -218,5 +230,13 @@ export default {
     font-size: 20px;
     cursor: pointer;
     margin: 0 2px;
+  }
+  .vertical-center-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .vertical-center-modal > .ivu-modal{
+      top: 0;
   }
 </style>
